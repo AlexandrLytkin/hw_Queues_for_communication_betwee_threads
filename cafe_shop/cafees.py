@@ -1,5 +1,6 @@
 import queue
-import time
+import random
+# import time
 
 from cafe_shop.customers import Customer
 
@@ -7,33 +8,31 @@ from cafe_shop.customers import Customer
 class Cafe:
     def __init__(self, tables):
         self.queue = queue.Queue()
-        self.tables = list(tables)
+        self.tables = tables
 
     def customer_arrival(self):
+        customers = []
         for i in range(20):
-            customer = Customer(i + 1)
-            self.serve_customer(customer)
-            time.sleep(0.1)
+            customer = Customer(i + 1, self)
+            customers.append(customer)
+            print(f'Посетитель номер {customer.number} прибыл')
+            customer.start()
+            # time.sleep(1)
+            _ = 3 ** (random.randint(50, 70) * 10_000)
+        for cust in customers:
+            cust.join()
 
     def serve_customer(self, customer):
-        print(f'Посетитель номер {customer.num_customer} прибыл')
-        # if not any(table.is_busy for table in self.tables):
+        self.queue.put(customer)
         for table in self.tables:
             if not table.is_busy:
-                print(f'Посетитель номер {customer.num_customer} сел за стол {table.number}')
-                if self.queue.empty():
-                    table.switch()
-                    customer.run()
-                    # table.switch()
-                    break
-
-                else:
+                while not self.queue.empty():
                     cust = self.queue.get()
+                    print(f'Посетитель номер {cust.number} сел за стол {table.number}')
                     table.switch()
-                    cust.run()
+                    _ = 3 ** (random.randint(50, 70) * 100_000)
+                    # time.sleep(5)
                     table.switch()
-                    break
-
-        else:
-            print(f'Посетитель номер {customer.num_customer} ожидает свободный стол')
-            self.queue.put(customer)
+                    print(f'Посетитель номер {cust.number} покушал и ушёл.')
+                    return
+        print(f'Посетитель номер {customer.number} ожидает свободный стол')
