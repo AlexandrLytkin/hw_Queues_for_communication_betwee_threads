@@ -1,6 +1,6 @@
 import queue
 import random
-# import time
+import time
 
 from cafe_shop.customers import Customer
 
@@ -17,8 +17,8 @@ class Cafe:
             customers.append(customer)
             print(f'Посетитель номер {customer.number} прибыл')
             customer.start()
-            # time.sleep(1)
-            _ = 3 ** (random.randint(50, 70) * 10_000)
+            time.sleep(1)
+            # _ = 3 ** (random.randint(50, 70) * 10_000)
         for cust in customers:
             cust.join()
 
@@ -27,11 +27,11 @@ class Cafe:
         for table in self.tables:
             if not table.is_busy:
                 while not self.queue.empty():
-                    cust = self.queue.get()
+                    cust = self.queue.get(timeout=5)
                     print(f'Посетитель номер {cust.number} сел за стол {table.number}')
                     table.switch()
-                    _ = 3 ** (random.randint(50, 70) * 100_000)
-                    # time.sleep(5)
+                    # _ = 3 ** (random.randint(50, 70) * 100_000)
+                    time.sleep(2)
                     table.switch()
                     print(f'Посетитель номер {cust.number} покушал и ушёл.')
                     return
