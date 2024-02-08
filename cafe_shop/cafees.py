@@ -18,21 +18,19 @@ class Cafe:
             print(f'Посетитель номер {customer.number} прибыл')
             customer.start()
             time.sleep(1)
-            # _ = 3 ** (random.randint(50, 70) * 10_000)
         for cust in customers:
             cust.join()
 
     def serve_customer(self, customer):
-        self.queue.put(customer)
         for table in self.tables:
             if not table.is_busy:
-                while not self.queue.empty():
-                    cust = self.queue.get(timeout=5)
-                    print(f'Посетитель номер {cust.number} сел за стол {table.number}')
-                    table.switch()
-                    # _ = 3 ** (random.randint(50, 70) * 100_000)
-                    time.sleep(2)
-                    table.switch()
-                    print(f'Посетитель номер {cust.number} покушал и ушёл.')
-                    return
+                print(f'Посетитель номер {customer.number} сел за стол {table.number}')
+                table.switch()
+                time.sleep(5)
+                table.switch()
+                print(f'Посетитель номер {customer.number} покушал и ушёл.')
+                if not self.queue.empty():
+                    self.serve_customer(self.queue.get())
+                return
         print(f'Посетитель номер {customer.number} ожидает свободный стол')
+        self.queue.put(customer)
